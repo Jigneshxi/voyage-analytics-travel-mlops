@@ -1,0 +1,35 @@
+# ==========================================
+# Voyage Analytics - Flask REST API Dockerfile
+# ==========================================
+FROM python:3.12-slim
+
+# Set working directory
+WORKDIR /app
+
+# Prevent Python from writing .pyc and buffer stdout
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code and model artifacts
+COPY api/ ./api/
+COPY models/ ./models/
+
+# Expose REST API port
+EXPOSE 5000
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+# Launch Flask application using Gunicorn/Python
+CMD ["python", "api/app.py"]

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  flask-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.flask
+    container_name: voyage-flask-api
+    ports:
+      - "5000:5000"
+    environment:
+      - ENV=production
+      - PORT=5000
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  streamlit-frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.streamlit
+    container_name: voyage-streamlit-app
+    ports:
+      - "8501:8501"
+    depends_on:
+      - flask-api
+    restart: always
+
+  mlflow-server:
+    image: ghcr.io/mlflow/mlflow:v2.14.0
+    container_name: voyage-mlflow-tracking
+    ports:
+      - "5050:5000"
+    volumes:
+      - ../mlruns:/mlruns
+      - ../mlflow.db:/mlflow.db
+    command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlruns --host 0.0.0.0 --port 5000
+    restart: always
