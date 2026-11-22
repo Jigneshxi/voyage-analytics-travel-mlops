@@ -1,29 +1,22 @@
-# Python artifacts
+# Python cache
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-
-# Jupyter
-.ipynb_checkpoints/
-
-# MLflow
-mlruns/
-.trash/
-
-# Testing & Coverage
+*.pyc
 .pytest_cache/
-.coverage
-htmlcov/
+.ipynb_checkpoints/
+*.egg-info/
 
-# Operating System
-.DS_Store
-Thumbs.db
+# Databases & local runs
+mlflow.db
+mlruns/
+.env
+venv/
 
-# Archives
+# Archives & workspace artifacts
+travel_capstone.zip
 *.zip
+Jignesh Chat Agent/
+Jignesh_Chat_Agent/
+Sample EDA Submission Template.ipynb
+Sample ML Submission Template.ipynb
 inspect_template.py
+execute_all_notebooks.py
